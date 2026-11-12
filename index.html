@@ -54,7 +54,20 @@
       <p class="date" id="date"></p>
     </section>
 
-    <button class="reglages" id="ouvrir" type="button">⚙︎ Réglages</button>
+    <button class="reglages" id="ouvrir" type="button" aria-label="Réglages" title="Réglages">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-linecap="round">
+          <g stroke-width="4" stroke-linecap="butt">
+            <path d="M12 2v4"/><path d="M12 2v4" transform="rotate(45 12 12)"/>
+            <path d="M12 2v4" transform="rotate(90 12 12)"/><path d="M12 2v4" transform="rotate(135 12 12)"/>
+            <path d="M12 2v4" transform="rotate(180 12 12)"/><path d="M12 2v4" transform="rotate(225 12 12)"/>
+            <path d="M12 2v4" transform="rotate(270 12 12)"/><path d="M12 2v4" transform="rotate(315 12 12)"/>
+          </g>
+          <circle cx="12" cy="12" r="6" stroke-width="3"/>
+          <circle cx="12" cy="12" r="2.4" stroke-width="1.8"/>
+        </g>
+      </svg>
+    </button>
   </main>
 
   <dialog id="dialogue">
@@ -82,6 +95,7 @@
         <label><input type="radio" name="theme" value="neon"><span class="apercu apercu-neon"></span>Tokyo néon</label>
         <label><input type="radio" name="theme" value="cyberpunk"><span class="apercu apercu-cyberpunk"></span>Cyberpunk</label>
         <label><input type="radio" name="theme" value="washi"><span class="apercu apercu-washi"></span>Estampe</label>
+        <label><input type="radio" name="theme" value="ghibli"><span class="apercu apercu-ghibli"></span>Ghibli</label>
       </fieldset>
       <div class="installer" id="installer" hidden>
         <p class="installer-titre">📲 Avoir l'appli sur l'écran d'accueil</p>

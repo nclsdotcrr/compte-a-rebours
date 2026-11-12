@@ -175,6 +175,54 @@
   --petale-1: #f2b8c6; --petale-2: #f7d2db; --petale-3: #eaa3b5; --petale-4: #fbe3e9;
 }
 
+/* --- Ghibli (ciel d'été, gros nuages et collines vertes, façon aquarelle) --- */
+:root[data-theme="ghibli"] {
+  --fond:
+    radial-gradient(ellipse 120px 44px at 14% 13%, rgba(255, 255, 255, .95) 0 55%, transparent 100%),
+    radial-gradient(ellipse 80px 34px at 26% 9%, rgba(255, 255, 255, .9) 0 55%, transparent 100%),
+    radial-gradient(ellipse 140px 50px at 88% 24%, rgba(255, 255, 255, .9) 0 55%, transparent 100%),
+    radial-gradient(ellipse 90px 36px at 74% 19%, rgba(255, 255, 255, .85) 0 55%, transparent 100%),
+    radial-gradient(ellipse 75% 17% at 12% 100%, #7fba6c 0 99%, transparent 100%),
+    radial-gradient(ellipse 80% 13% at 92% 100%, #a3d48a 0 99%, transparent 100%),
+    linear-gradient(180deg, #7cc4ee 0%, #b5e1f8 45%, #e3f5e6 78%, #cfeab5 100%);
+  --texte: #3d4a3a;
+  --doux: #6f8068;
+  --accent: #4f9460;
+  --accent-ombre: #37704a;
+
+  --pastille-fond: rgba(255, 253, 242, .8);
+  --pastille-texte: #4f9460;
+
+  --carte-fond: rgba(255, 253, 242, .9);
+  --carte-bord: 3px solid #fffdf2;
+  --carte-ombre: 0 10px 28px rgba(60, 100, 80, .25);
+  --rayon: 28px;
+  --rayon-petit: 16px;
+
+  --nombre: #4f9460;
+  --nombre-ombre: 3px 3px 0 #dcefc9, 6px 6px 0 #fffdf2;
+
+  --case-1: #d9efc6; --case-2: #cfe9fb; --case-3: #ffe9b8; --case-4: #f9d9cc;
+  --case-bord: none;
+  --case-texte: var(--texte);
+
+  --bouton-fond: #5ba36b; --bouton-texte: #fffdf2; --bouton-ombre: #37704a;
+  --bouton2-fond: rgba(255, 253, 242, .9); --bouton2-texte: #6f8068; --bouton2-ombre: #cfe3b8;
+
+  --dlg-fond: #fffdf2;
+  --champ-fond: #fff;
+  --champ-bord: #cfe3b8;
+  --voile: rgba(50, 85, 70, .4);
+
+  --f-mont: #6fae7c; --f-trait: none; --f-neige: #fffdf2; --f-soleil: #ffd166;
+  --f-nuage: #fff; --f-yeux: #3d4a3a; --f-reflet: #fff; --f-joue: #f6a58e;
+  --f-lueur: drop-shadow(0 4px 0 rgba(60, 100, 80, .12));
+
+  /* Des feuilles à la place des pétales */
+  --petale-1: #7fba6c; --petale-2: #a3d48a; --petale-3: #5ba36b; --petale-4: #e8c66a;
+  --petale-forme: 0 100% 0 100%;
+}
+
 /* ============================================================
    Mise en page (commune à tous les thèmes)
    ============================================================ */
@@ -327,7 +375,23 @@ button.secondaire, .reglages {
 .minuteur div { padding: clamp(4px, 1dvh, 10px) 2px clamp(3px, .8dvh, 8px); }
 .minuteur b { font-size: clamp(18px, 3dvh, 24px); }
 .date { margin-top: clamp(8px, 1.6dvh, 14px) !important; font-size: clamp(12px, 1.8dvh, 14px); }
-.reglages { padding-top: clamp(8px, 1.4dvh, 12px); padding-bottom: clamp(8px, 1.4dvh, 12px); }
+/* Réglages : une simple roue crantée, discrète */
+.reglages {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+  color: var(--doux);
+  opacity: .6;
+  transition: opacity .2s, transform .3s;
+}
+.reglages svg { width: 24px; height: 24px; }
+.reglages:hover, .reglages:focus-visible { opacity: 1; }
+.reglages:active { opacity: 1; transform: rotate(60deg); box-shadow: none; }
 
 /* Fenêtre de réglages */
 dialog {
@@ -411,6 +475,7 @@ dialog label.case input { width: 20px; height: 20px; margin: 0; accent-color: va
 .apercu-neon { background: radial-gradient(circle at 70% 40%, #ff3ea5 0 7px, transparent 8px), linear-gradient(135deg, #12062b 0 55%, #22e4ff 55% 60%, #2a0f52 60%); box-shadow: inset 0 0 10px rgba(255, 62, 165, .6); }
 .apercu-cyberpunk { background: linear-gradient(115deg, #fcee0a 0 45%, #0b0b0f 45% 80%, #00f0ff 80% 86%, #ff003c 86%); border-radius: 0; }
 .apercu-washi { background: radial-gradient(circle at 72% 40%, #b7282e 0 9px, transparent 10px), linear-gradient(180deg, #f7f0e1 0 55%, #2f4f7f 55%); }
+.apercu-ghibli { background: radial-gradient(ellipse 22px 9px at 28% 34%, #fff 0 60%, transparent 100%), radial-gradient(circle at 76% 30%, #ffd166 0 6px, transparent 7px), radial-gradient(ellipse 70% 55% at 30% 115%, #7fba6c 0 99%, transparent 100%), radial-gradient(ellipse 70% 45% at 90% 115%, #a3d48a 0 99%, transparent 100%), linear-gradient(180deg, #7cc4ee, #d6f0f6); }
 
 /* Pétales (ou éclats lumineux selon le thème) */
 .petales { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
@@ -482,6 +547,11 @@ body.jour-j .nombre { animation: saute 1s ease-in-out infinite alternate; }
 :root[data-theme="washi"] .carte { outline: 1px solid #b7282e; outline-offset: -8px; }
 :root[data-theme="washi"] .pastille { border-top: 1px solid #b7282e; border-bottom: 1px solid #b7282e; border-radius: 0; letter-spacing: .15em; }
 :root[data-theme="washi"] .nombre { font-weight: 700; }
+
+/* Ghibli : feuilles plus lentes, carte un peu « papier » */
+:root[data-theme="ghibli"] .petale { opacity: .75; }
+:root[data-theme="ghibli"] .pastille { box-shadow: 0 2px 0 rgba(60, 100, 80, .12); }
+:root[data-theme="ghibli"] .f-soleil { filter: drop-shadow(0 0 6px rgba(255, 209, 102, .8)); }
 
 @media (prefers-reduced-motion: reduce) {
   .petale, .f-nuage { animation: none; }

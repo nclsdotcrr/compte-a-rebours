@@ -1,6 +1,6 @@
 /* Garde l'appli en cache pour qu'elle marche sans réseau.
    Changer VERSION après chaque modification des fichiers. */
-var VERSION = "japon-v7";
+var VERSION = "japon-v8";
 var FICHIERS = [
   "./",
   "index.html",

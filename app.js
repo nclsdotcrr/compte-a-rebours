@@ -3,7 +3,7 @@
 
   var VILLE = "Tokyo";
   var CLE = "compte-a-rebours-japon";
-  var THEMES = { kawaii: "#ffd6e7", neon: "#12062b", cyberpunk: "#0b0b0f", washi: "#f7f0e1" };
+  var THEMES = { kawaii: "#ffd6e7", neon: "#12062b", cyberpunk: "#0b0b0f", washi: "#f7f0e1", ghibli: "#8fd0f5" };
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -96,7 +96,7 @@
       avant = "あと";
       nombre = "?";
       unite = "jours";
-      message = "Touchez « Réglages » pour choisir la date du départ 🥢";
+      message = "Touchez la roue ⚙︎ pour choisir la date du départ 🍣🥢";
       dateTxt = "";
     } else {
       var n = noms(reglages, res.jours);
@@ -106,7 +106,7 @@
         avant = "あと";
         nombre = String(res.jours);
         unite = "jours";
-        message = (n ? n + " : plus" : "Plus") + " que " + res.jours + " jours avant " + VILLE + " ! 🥢";
+        message = (n ? n + " : plus" : "Plus") + " que " + res.jours + " jours avant " + VILLE + " ! 🍣🥢";
       } else if (res.jours === 1) {
         avant = "あと";
         nombre = "1";
@@ -117,8 +117,8 @@
         nombre = "Jour J";
         unite = "";
         message = res.envole
-          ? "Décollage ! Bon vol" + virgule + " 🥢 いってらっしゃい"
-          : "C'est aujourd'hui" + virgule + " ! いってらっしゃい 🥢";
+          ? "Décollage ! Bon vol" + virgule + " 🍣🥢 いってらっしゃい"
+          : "C'est aujourd'hui" + virgule + " ! いってらっしゃい 🍣🥢";
       } else {
         pastille = "東京で ・ à " + VILLE;
         avant = "東京で";
