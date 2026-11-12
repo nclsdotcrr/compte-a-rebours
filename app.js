@@ -96,7 +96,7 @@
       avant = "あと";
       nombre = "?";
       unite = "jours";
-      message = "Touchez « Réglages » pour choisir la date du départ ✈️";
+      message = "Touchez « Réglages » pour choisir la date du départ 🥢";
       dateTxt = "";
     } else {
       var n = noms(reglages, res.jours);
@@ -106,7 +106,7 @@
         avant = "あと";
         nombre = String(res.jours);
         unite = "jours";
-        message = (n ? n + " : plus" : "Plus") + " que " + res.jours + " jours avant " + VILLE + " ! ✈️";
+        message = (n ? n + " : plus" : "Plus") + " que " + res.jours + " jours avant " + VILLE + " ! 🥢";
       } else if (res.jours === 1) {
         avant = "あと";
         nombre = "1";
@@ -117,8 +117,8 @@
         nombre = "Jour J";
         unite = "";
         message = res.envole
-          ? "Décollage ! Bon vol" + virgule + " ✈️ いってらっしゃい"
-          : "C'est aujourd'hui" + virgule + " ! いってらっしゃい ✈️";
+          ? "Décollage ! Bon vol" + virgule + " 🥢 いってらっしゃい"
+          : "C'est aujourd'hui" + virgule + " ! いってらっしゃい 🥢";
       } else {
         pastille = "東京で ・ à " + VILLE;
         avant = "東京で";
@@ -195,6 +195,51 @@
     appliquerTheme(reglages.theme);
     relancer();
   });
+
+  /* ---------- Installation sur l'écran d'accueil ---------- */
+  var invite = null; // événement « beforeinstallprompt » gardé pour plus tard (Chrome, Android)
+  var dejaInstallee = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) ||
+    navigator.standalone === true;
+  var iOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+  function majInstaller() {
+    var bloc = $("installer"), bouton = $("bouton-installer"), aide = $("installer-aide");
+    bloc.hidden = dejaInstallee;
+    if (dejaInstallee) return;
+    bouton.hidden = !invite;
+    if (invite) {
+      aide.textContent = "";
+    } else if (iOS) {
+      aide.textContent = "Sur iPhone : ouvrez ce lien dans Safari, touchez le bouton Partager " +
+        "(le carré avec une flèche ↑), puis « Sur l'écran d'accueil ».";
+    } else {
+      aide.textContent = "Touchez le menu ⋮ du navigateur, puis « Installer l'application » " +
+        "ou « Ajouter à l'écran d'accueil ».";
+    }
+  }
+
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    invite = e;
+    majInstaller();
+  });
+  window.addEventListener("appinstalled", function () {
+    invite = null;
+    dejaInstallee = true;
+    majInstaller();
+  });
+  $("bouton-installer").addEventListener("click", function () {
+    if (!invite) return;
+    var e = invite;
+    invite = null; // une invite ne sert qu'une fois
+    e.prompt();
+    (e.userChoice || Promise.resolve({})).then(function (choix) {
+      if (choix && choix.outcome === "accepted") dejaInstallee = true;
+      majInstaller();
+    });
+  });
+  majInstaller();
 
   /* ---------- Pétales ---------- */
   var reduit = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;

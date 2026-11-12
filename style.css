@@ -346,6 +346,11 @@ dialog label.case { display: flex; align-items: center; gap: 10px; margin-top: -
 dialog label.case input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
 
 .aide { font-size: 13px; color: var(--doux); margin: 0 0 16px; line-height: 1.4; }
+.installer { border-top: 1px dashed var(--champ-bord); padding-top: 14px; margin: 4px 0 16px; }
+.installer-titre { font-weight: 700; font-size: 15px; margin: 0 0 10px; }
+.installer button { width: 100%; margin-bottom: 10px; }
+.installer .aide { margin: 0; }
+.installer .aide:empty { display: none; }
 .boutons { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
 
 /* Choix du thème */
