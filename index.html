@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tokyo J-</title>
+  <meta name="description" content="Compte à rebours avant le départ pour Tokyo">
+  <meta name="theme-color" content="#ffd6e7">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Applique le thème enregistré avant l'affichage (évite un flash de couleurs).
+    try {
+      var t = (JSON.parse(localStorage.getItem("compte-a-rebours-japon") || "{}") || {}).theme;
+      if (t) document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div class="petales" aria-hidden="true"></div>
+
+  <main class="page">
+    <p class="pastille" id="pastille">東京まで ・ direction Tokyo</p>
+
+    <svg class="fuji" viewBox="0 0 240 150" aria-hidden="true">
+      <g class="f-nuage">
+        <ellipse cx="40" cy="40" rx="22" ry="12"/><ellipse cx="58" cy="34" rx="16" ry="12"/>
+        <ellipse cx="200" cy="56" rx="20" ry="10"/><ellipse cx="185" cy="52" rx="13" ry="10"/>
+      </g>
+      <circle class="f-soleil" cx="190" cy="28" r="16"/>
+      <path class="f-mont" d="M10 148 L104 30 Q120 14 136 30 L230 148 Z"/>
+      <path class="f-neige" d="M86 52 L104 30 Q120 14 136 30 L154 52 Q146 62 138 54 Q130 64 120 54 Q110 64 102 54 Q94 62 86 52 Z"/>
+      <circle class="f-yeux" cx="104" cy="88" r="5"/>
+      <circle class="f-yeux" cx="136" cy="88" r="5"/>
+      <circle class="f-reflet" cx="106" cy="86" r="1.6"/><circle class="f-reflet" cx="138" cy="86" r="1.6"/>
+      <ellipse class="f-joue" cx="94" cy="100" rx="8" ry="5"/>
+      <ellipse class="f-joue" cx="146" cy="100" rx="8" ry="5"/>
+      <path class="f-bouche" d="M113 98 Q120 106 127 98"/>
+    </svg>
+
+    <section class="carte" aria-live="polite">
+      <p class="avant" id="avant">あと</p>
+      <p class="nombre" id="nombre">–</p>
+      <p class="unite" id="unite">jours</p>
+      <p class="message" id="message"></p>
+      <div class="minuteur" id="minuteur" hidden>
+        <div><b id="mj">0</b><span>j</span></div>
+        <div><b id="mh">00</b><span>h</span></div>
+        <div><b id="mm">00</b><span>min</span></div>
+        <div><b id="ms">00</b><span>s</span></div>
+      </div>
+      <p class="date" id="date"></p>
+    </section>
+
+    <button class="reglages" id="ouvrir" type="button">⚙︎ Réglages</button>
+  </main>
+
+  <dialog id="dialogue">
+    <form method="dialog" id="formulaire">
+      <h2>Réglages ✿</h2>
+      <fieldset class="voyageuses">
+        <legend>Les voyageuses (facultatif)</legend>
+        <div class="deux-champs">
+          <input type="text" id="prenom1" maxlength="30" autocomplete="off" placeholder="Prénom" aria-label="Prénom de la première voyageuse">
+          <span aria-hidden="true">&amp;</span>
+          <input type="text" id="prenom2" maxlength="30" autocomplete="off" placeholder="Prénom" aria-label="Prénom de la deuxième voyageuse">
+        </div>
+      </fieldset>
+      <label>Date du départ
+        <input type="date" id="champ-date" required>
+      </label>
+      <label class="case"><input type="checkbox" id="provisoire"> Date encore provisoire</label>
+      <label>Heure du vol, heure de Paris (facultatif)
+        <input type="time" id="champ-heure">
+      </label>
+      <p class="aide">Sans heure, l'appli compte les jours. Avec une heure, elle affiche aussi les heures, minutes et secondes.</p>
+      <fieldset class="themes">
+        <legend>Thème</legend>
+        <label><input type="radio" name="theme" value="kawaii"><span class="apercu apercu-kawaii"></span>Kawaii pastel</label>
+        <label><input type="radio" name="theme" value="neon"><span class="apercu apercu-neon"></span>Tokyo néon</label>
+        <label><input type="radio" name="theme" value="cyberpunk"><span class="apercu apercu-cyberpunk"></span>Cyberpunk</label>
+        <label><input type="radio" name="theme" value="washi"><span class="apercu apercu-washi"></span>Estampe</label>
+      </fieldset>
+      <div class="boutons">
+        <button type="button" id="annuler" class="secondaire">Annuler</button>
+        <button type="submit" id="enregistrer">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="countdown.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

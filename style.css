@@ -1,0 +1,461 @@
+/* ============================================================
+   Thèmes : chaque thème ne fait que redéfinir ces variables
+   (plus quelques effets propres, en bas du fichier).
+   ============================================================ */
+
+/* --- Kawaii pastel (par défaut) --- */
+:root {
+  --fond: linear-gradient(170deg, #ffe3ef 0%, #f3e8ff 50%, #e3f4ff 100%);
+  --texte: #5b4a6b;
+  --doux: #8f7fa0;
+  --accent: #ff8fb1;
+  --accent-ombre: #e97399;
+  --police: "M PLUS Rounded 1c", "Nunito", "Quicksand", ui-rounded, "Segoe UI", Roboto, system-ui, sans-serif;
+  --police-nombre: var(--police);
+
+  --pastille-fond: rgba(255, 255, 255, .7);
+  --pastille-texte: #ff8fb1;
+
+  --carte-fond: rgba(255, 255, 255, .78);
+  --carte-bord: 3px solid #fff;
+  --carte-ombre: 0 10px 30px rgba(180, 120, 170, .22);
+  --rayon: 32px;
+  --rayon-petit: 18px;
+  --rayon-bouton: 999px;
+
+  --nombre: #ff8fb1;
+  --nombre-ombre: 4px 4px 0 #ffd6e7, 8px 8px 0 #fff;
+
+  --case-1: #bff0dc; --case-2: #ffd6e7; --case-3: #e6dcff; --case-4: #fff1c9;
+  --case-bord: none;
+  --case-texte: var(--texte);
+
+  --bouton-fond: #ff8fb1; --bouton-texte: #fff; --bouton-ombre: #e97399;
+  --bouton2-fond: rgba(255, 255, 255, .85); --bouton2-texte: #8f7fa0; --bouton2-ombre: #ecdcef;
+
+  --dlg-fond: #fff8fb;
+  --champ-fond: #fff;
+  --champ-bord: #ffd6e7;
+  --voile: rgba(120, 90, 140, .35);
+
+  --f-mont: #b9c6ff; --f-trait: none; --f-neige: #fff; --f-soleil: #ff9fb8;
+  --f-nuage: #fff; --f-yeux: #5b4a6b; --f-reflet: #fff; --f-joue: #ff9fb8;
+  --f-lueur: none;
+
+  --petale-1: #ffc2d6; --petale-2: #ffd6e7; --petale-3: #ffb3cb; --petale-4: #fde2ff;
+  --petale-forme: 12px 0 12px 0;
+  --petale-lueur: none;
+}
+
+/* --- Tokyo néon --- */
+:root[data-theme="neon"] {
+  --fond: radial-gradient(120% 80% at 50% 0%, #2a0f52 0%, #12062b 55%, #070313 100%);
+  --texte: #f6ecff;
+  --doux: #b9a6e6;
+  --accent: #ff3ea5;
+  --accent-ombre: #a3006a;
+
+  --pastille-fond: rgba(255, 62, 165, .12);
+  --pastille-texte: #ff7cc6;
+
+  --carte-fond: rgba(22, 10, 50, .72);
+  --carte-bord: 2px solid #ff3ea5;
+  --carte-ombre: 0 0 18px rgba(255, 62, 165, .55), inset 0 0 22px rgba(34, 228, 255, .18);
+  --rayon: 26px;
+
+  --nombre: #ffe6f6;
+  --nombre-ombre: 0 0 6px #ff3ea5, 0 0 18px #ff3ea5, 0 0 42px #ff006e, 0 0 80px #ff006e;
+
+  --case-1: rgba(34, 228, 255, .08); --case-2: rgba(255, 62, 165, .08);
+  --case-3: rgba(180, 120, 255, .08); --case-4: rgba(255, 230, 90, .08);
+  --case-bord: 1.5px solid rgba(34, 228, 255, .7);
+  --case-texte: #e9fbff;
+
+  --bouton-fond: #ff3ea5; --bouton-texte: #fff; --bouton-ombre: #a3006a;
+  --bouton2-fond: rgba(255, 255, 255, .06); --bouton2-texte: #9fefff; --bouton2-ombre: rgba(34, 228, 255, .45);
+
+  --dlg-fond: #160a32;
+  --champ-fond: #0e0624;
+  --champ-bord: #5b2c9a;
+  --voile: rgba(5, 0, 20, .7);
+
+  --f-mont: #1d0b45; --f-trait: #22e4ff; --f-neige: #ff3ea5; --f-soleil: #ff3ea5;
+  --f-nuage: rgba(255, 255, 255, .12); --f-yeux: #22e4ff; --f-reflet: #fff; --f-joue: #ff3ea5;
+  --f-lueur: drop-shadow(0 0 6px rgba(34, 228, 255, .8)) drop-shadow(0 0 14px rgba(255, 62, 165, .5));
+
+  --petale-1: #ff3ea5; --petale-2: #22e4ff; --petale-3: #b47bff; --petale-4: #ff7cc6;
+  --petale-lueur: 0 0 8px currentColor;
+}
+
+/* --- Cyberpunk --- */
+:root[data-theme="cyberpunk"] {
+  --fond:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 4px),
+    linear-gradient(160deg, #0b0b0f 0%, #16161d 60%, #1d1407 100%);
+  --texte: #e8f9ff;
+  --doux: #7fe9f5;
+  --accent: #fcee0a;
+  --accent-ombre: #8a8200;
+  --police: "Rajdhani", "Share Tech Mono", ui-monospace, "JetBrains Mono", "DejaVu Sans Mono", "Courier New", monospace;
+
+  --pastille-fond: #fcee0a;
+  --pastille-texte: #0b0b0f;
+
+  --carte-fond: rgba(14, 14, 20, .9);
+  --carte-bord: 2px solid #fcee0a;
+  --carte-ombre: 6px 6px 0 #ff003c;
+  --rayon: 0;
+  --rayon-petit: 0;
+  --rayon-bouton: 0;
+
+  --nombre: #fcee0a;
+  --nombre-ombre: -3px 0 0 #ff003c, 3px 0 0 #00f0ff;
+
+  --case-1: #101018; --case-2: #101018; --case-3: #101018; --case-4: #101018;
+  --case-bord: 1.5px solid #00f0ff;
+  --case-texte: #fcee0a;
+
+  --bouton-fond: #fcee0a; --bouton-texte: #0b0b0f; --bouton-ombre: #ff003c;
+  --bouton2-fond: #0b0b0f; --bouton2-texte: #00f0ff; --bouton2-ombre: #00f0ff;
+
+  --dlg-fond: #0e0e14;
+  --champ-fond: #050508;
+  --champ-bord: #00f0ff;
+  --voile: rgba(0, 0, 0, .75);
+
+  --f-mont: #15151d; --f-trait: #00f0ff; --f-neige: #fcee0a; --f-soleil: #ff003c;
+  --f-nuage: rgba(0, 240, 255, .15); --f-yeux: #fcee0a; --f-reflet: #0b0b0f; --f-joue: #ff003c;
+  --f-lueur: drop-shadow(0 0 4px rgba(0, 240, 255, .7));
+
+  --petale-1: #fcee0a; --petale-2: #00f0ff; --petale-3: #ff003c; --petale-4: #fcee0a;
+  --petale-forme: 0;
+  --petale-lueur: 0 0 6px currentColor;
+}
+
+/* --- Estampe (Japon traditionnel, papier washi et vermillon) --- */
+:root[data-theme="washi"] {
+  --fond:
+    radial-gradient(circle at 20% 10%, rgba(183, 40, 46, .06), transparent 40%),
+    linear-gradient(180deg, #f7f0e1 0%, #efe4cf 100%);
+  --texte: #2b2622;
+  --doux: #7a6a58;
+  --accent: #b7282e;
+  --accent-ombre: #7c1a1e;
+  --police: "Shippori Mincho", "Noto Serif JP", "Noto Serif", Georgia, "Times New Roman", serif;
+
+  --pastille-fond: transparent;
+  --pastille-texte: #b7282e;
+
+  --carte-fond: #fffaf0;
+  --carte-bord: 2px solid #2b2622;
+  --carte-ombre: 0 2px 0 #2b2622, 0 12px 26px rgba(80, 50, 20, .15);
+  --rayon: 6px;
+  --rayon-petit: 4px;
+  --rayon-bouton: 6px;
+
+  --nombre: #b7282e;
+  --nombre-ombre: none;
+
+  --case-1: #f1e7d3; --case-2: #f1e7d3; --case-3: #f1e7d3; --case-4: #f1e7d3;
+  --case-bord: 1px solid #c9b79a;
+  --case-texte: #2b2622;
+
+  --bouton-fond: #b7282e; --bouton-texte: #fffaf0; --bouton-ombre: #7c1a1e;
+  --bouton2-fond: #fffaf0; --bouton2-texte: #2b2622; --bouton2-ombre: #c9b79a;
+
+  --dlg-fond: #fffaf0;
+  --champ-fond: #fff;
+  --champ-bord: #c9b79a;
+  --voile: rgba(43, 38, 34, .45);
+
+  --f-mont: #2f4f7f; --f-trait: none; --f-neige: #fffaf0; --f-soleil: #b7282e;
+  --f-nuage: #fffaf0; --f-yeux: #fffaf0; --f-reflet: #2f4f7f; --f-joue: #e7a2a2;
+  --f-lueur: none;
+
+  --petale-1: #f2b8c6; --petale-2: #f7d2db; --petale-3: #eaa3b5; --petale-4: #fbe3e9;
+}
+
+/* ============================================================
+   Mise en page (commune à tous les thèmes)
+   ============================================================ */
+* { box-sizing: border-box; }
+
+html, body { margin: 0; min-height: 100%; }
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--fond);
+  background-attachment: fixed;
+  color: var(--texte);
+  font-family: var(--police);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: max(20px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.pastille {
+  margin: 8px 0 0;
+  padding: 6px 14px;
+  border-radius: var(--rayon-bouton);
+  background: var(--pastille-fond);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pastille-texte);
+  letter-spacing: .03em;
+}
+
+/* Mont Fuji */
+.fuji { width: min(70vw, 260px); height: auto; margin-bottom: -26px; filter: var(--f-lueur); }
+.f-nuage { fill: var(--f-nuage); animation: flotte 6s ease-in-out infinite alternate; }
+.f-soleil { fill: var(--f-soleil); }
+.f-mont { fill: var(--f-mont); stroke: var(--f-trait); stroke-width: 2; stroke-linejoin: round; }
+.f-neige { fill: var(--f-neige); }
+.f-yeux { fill: var(--f-yeux); }
+.f-reflet { fill: var(--f-reflet); }
+.f-joue { fill: var(--f-joue); opacity: .8; }
+.f-bouche { fill: none; stroke: var(--f-yeux); stroke-width: 3; stroke-linecap: round; }
+
+.carte {
+  position: relative;
+  width: 100%;
+  background: var(--carte-fond);
+  border: var(--carte-bord);
+  border-radius: var(--rayon);
+  box-shadow: var(--carte-ombre);
+  padding: 30px 20px 22px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+}
+
+.carte p { margin: 0; }
+
+.avant { font-size: 20px; font-weight: 700; color: var(--doux); }
+
+.nombre {
+  font-family: var(--police-nombre);
+  font-size: clamp(88px, 32vw, 140px);
+  font-weight: 800;
+  line-height: 1;
+  margin: 4px 0 !important;
+  color: var(--nombre);
+  text-shadow: var(--nombre-ombre);
+  font-variant-numeric: tabular-nums;
+}
+.nombre.petit { font-size: clamp(54px, 18vw, 80px); }
+
+.unite { font-size: 24px; font-weight: 800; }
+
+.message {
+  margin-top: 14px !important;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all; /* ne coupe pas les mots japonais en deux */
+}
+
+.date { margin-top: 14px !important; font-size: 14px; color: var(--doux); }
+
+.minuteur {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+.minuteur[hidden] { display: none; }
+.minuteur div {
+  background: var(--case-1);
+  border: var(--case-bord);
+  border-radius: var(--rayon-petit);
+  padding: 10px 2px 8px;
+  color: var(--case-texte);
+}
+.minuteur div:nth-child(2) { background: var(--case-2); }
+.minuteur div:nth-child(3) { background: var(--case-3); }
+.minuteur div:nth-child(4) { background: var(--case-4); }
+.minuteur b { display: block; font-size: 24px; font-variant-numeric: tabular-nums; }
+.minuteur span { font-size: 12px; color: var(--doux); font-weight: 700; }
+
+button {
+  font: inherit;
+  font-weight: 700;
+  border: 0;
+  border-radius: var(--rayon-bouton);
+  padding: 12px 22px;
+  cursor: pointer;
+  color: var(--bouton-texte);
+  background: var(--bouton-fond);
+  box-shadow: 0 4px 0 var(--bouton-ombre);
+}
+button:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--bouton-ombre); }
+button.secondaire, .reglages {
+  background: var(--bouton2-fond);
+  color: var(--bouton2-texte);
+  box-shadow: 0 4px 0 var(--bouton2-ombre);
+}
+
+/* Fenêtre de réglages */
+dialog {
+  width: min(92vw, 400px);
+  max-height: 92dvh;
+  border: var(--carte-bord);
+  border-radius: var(--rayon);
+  padding: 22px 20px;
+  background: var(--dlg-fond);
+  color: var(--texte);
+  font-family: var(--police);
+  box-shadow: var(--carte-ombre);
+  scrollbar-width: thin;
+  scrollbar-color: var(--champ-bord) transparent;
+}
+dialog::backdrop { background: var(--voile); }
+dialog h2 { margin: 0 0 14px; color: var(--accent); font-size: 22px; }
+dialog label { display: block; font-weight: 700; font-size: 15px; margin-bottom: 14px; }
+dialog input:not([type="radio"]):not([type="checkbox"]) {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--texte);
+  color-scheme: light;
+  border: 2px solid var(--champ-bord);
+  border-radius: var(--rayon-petit);
+  background: var(--champ-fond);
+}
+:root[data-theme="neon"] dialog input, :root[data-theme="cyberpunk"] dialog input { color-scheme: dark; }
+dialog input:focus { outline: none; border-color: var(--accent); }
+/* Les deux prénoms, côte à côte, à égalité */
+.voyageuses { border: 0; padding: 0; margin: 0 0 14px; }
+.voyageuses legend { font-weight: 700; font-size: 15px; padding: 0; }
+.deux-champs { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+.deux-champs span { margin-top: 6px; font-weight: 800; color: var(--accent); font-size: 18px; }
+dialog label.case { display: flex; align-items: center; gap: 10px; margin-top: -4px; font-weight: 600; }
+dialog label.case input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
+
+.aide { font-size: 13px; color: var(--doux); margin: 0 0 16px; line-height: 1.4; }
+.boutons { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+/* Choix du thème */
+.themes {
+  border: 0;
+  padding: 0;
+  margin: 0 0 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.themes legend { font-weight: 700; font-size: 15px; margin-bottom: 8px; padding: 0; }
+.themes label {
+  position: relative;
+  margin: 0;
+  padding: 8px;
+  border: 2px solid var(--champ-bord);
+  border-radius: var(--rayon-petit);
+  background: var(--champ-fond);
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+}
+.themes input { position: absolute; opacity: 0; pointer-events: none; }
+.themes label:has(input:checked) { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.themes label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.apercu {
+  display: block;
+  height: 38px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+}
+.apercu-kawaii { background: linear-gradient(135deg, #ffd6e7 0 40%, #b9c6ff 40% 70%, #bff0dc 70%); }
+.apercu-neon { background: radial-gradient(circle at 70% 40%, #ff3ea5 0 7px, transparent 8px), linear-gradient(135deg, #12062b 0 55%, #22e4ff 55% 60%, #2a0f52 60%); box-shadow: inset 0 0 10px rgba(255, 62, 165, .6); }
+.apercu-cyberpunk { background: linear-gradient(115deg, #fcee0a 0 45%, #0b0b0f 45% 80%, #00f0ff 80% 86%, #ff003c 86%); border-radius: 0; }
+.apercu-washi { background: radial-gradient(circle at 72% 40%, #b7282e 0 9px, transparent 10px), linear-gradient(180deg, #f7f0e1 0 55%, #2f4f7f 55%); }
+
+/* Pétales (ou éclats lumineux selon le thème) */
+.petales { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.petale {
+  position: absolute;
+  top: -30px;
+  border-radius: var(--petale-forme);
+  background: currentColor;
+  box-shadow: var(--petale-lueur);
+  opacity: .85;
+  animation: tombe linear infinite;
+}
+.petale.c1 { color: var(--petale-1); }
+.petale.c2 { color: var(--petale-2); }
+.petale.c3 { color: var(--petale-3); }
+.petale.c4 { color: var(--petale-4); }
+
+@keyframes tombe {
+  0%   { transform: translate(0, -30px) rotate(0deg); }
+  100% { transform: translate(60px, 110vh) rotate(540deg); }
+}
+@keyframes flotte { from { transform: translateX(-4px); } to { transform: translateX(6px); } }
+
+body.jour-j .nombre { animation: saute 1s ease-in-out infinite alternate; }
+@keyframes saute { from { transform: scale(1); } to { transform: scale(1.06); } }
+
+/* ============================================================
+   Effets propres à certains thèmes
+   ============================================================ */
+
+/* Néon : le chiffre grésille de temps en temps */
+:root[data-theme="neon"] .nombre { animation: neon 5s infinite; }
+:root[data-theme="neon"] .pastille { border: 1px solid #ff3ea5; box-shadow: 0 0 10px rgba(255, 62, 165, .5); }
+:root[data-theme="neon"] .avant, :root[data-theme="neon"] .unite { text-shadow: 0 0 10px rgba(34, 228, 255, .8); color: #9fefff; }
+:root[data-theme="neon"] .minuteur b { text-shadow: 0 0 8px rgba(34, 228, 255, .9); }
+@keyframes neon {
+  0%, 92%, 96%, 100% { opacity: 1; }
+  93%, 95% { opacity: .55; }
+}
+
+/* Cyberpunk : coins coupés, majuscules, petit « glitch » */
+:root[data-theme="cyberpunk"] .carte::before {
+  content: "SYS://TOKYO.EXE";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  padding: 2px 10px;
+  background: #fcee0a;
+  color: #0b0b0f;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+:root[data-theme="cyberpunk"] .pastille,
+:root[data-theme="cyberpunk"] .unite,
+:root[data-theme="cyberpunk"] .reglages,
+:root[data-theme="cyberpunk"] .minuteur span { text-transform: uppercase; letter-spacing: .12em; }
+:root[data-theme="cyberpunk"] .nombre { animation: glitch 4s steps(1) infinite; }
+:root[data-theme="cyberpunk"] .avant { color: #ff003c; letter-spacing: .3em; }
+:root[data-theme="cyberpunk"] .pastille { clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%); }
+@keyframes glitch {
+  0%, 88%, 100% { transform: none; text-shadow: -3px 0 0 #ff003c, 3px 0 0 #00f0ff; }
+  89% { transform: translate(-4px, 1px) skewX(-8deg); text-shadow: -6px 0 0 #ff003c, 6px 0 0 #00f0ff; }
+  91% { transform: translate(3px, -1px); text-shadow: 5px 0 0 #ff003c, -5px 0 0 #00f0ff; }
+  93% { transform: none; }
+}
+
+/* Estampe : liseré intérieur façon cadre d'estampe */
+:root[data-theme="washi"] .carte { outline: 1px solid #b7282e; outline-offset: -8px; }
+:root[data-theme="washi"] .pastille { border-top: 1px solid #b7282e; border-bottom: 1px solid #b7282e; border-radius: 0; letter-spacing: .15em; }
+:root[data-theme="washi"] .nombre { font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .petale, .f-nuage { animation: none; }
+  .petale { display: none; }
+  .nombre { animation: none !important; }
+}
