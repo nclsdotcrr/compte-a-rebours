@@ -3,7 +3,7 @@
 
   var VILLE = "Tokyo";
   var CLE = "compte-a-rebours-japon";
-  var THEMES = { kawaii: "#ffd6e7", neon: "#12062b", cyberpunk: "#0b0b0f", washi: "#f7f0e1", ghibli: "#8fd0f5" };
+  var THEMES = { kawaii: "#ffd6e7", neon: "#12062b", cyberpunk: "#0b0b0f", washi: "#f7f0e1", ghibli: "#8fd0f5", yokai: "#e4d2ad" };
 
   var $ = function (id) { return document.getElementById(id); };
 

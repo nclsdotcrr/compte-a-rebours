@@ -223,6 +223,57 @@
   --petale-forme: 0 100% 0 100%;
 }
 
+/* --- Yōkai (d'après une aquarelle : papier taché d'or, encre noire, masque blanc
+       à cornes, kimono gris-bleu et flammes rouges) --- */
+:root[data-theme="yokai"] {
+  --fond:
+    radial-gradient(circle at 0% 100%, #1d1b26 0 44px, #b8372c 45px 68px, #1d1b26 69px 78px, transparent 79px),
+    radial-gradient(ellipse 60% 26% at 88% 5%, rgba(196, 150, 66, .6), transparent 70%),
+    radial-gradient(ellipse 45% 20% at 6% 28%, rgba(196, 150, 66, .42), transparent 70%),
+    radial-gradient(ellipse 55% 22% at 82% 70%, rgba(196, 150, 66, .5), transparent 70%),
+    radial-gradient(ellipse 60% 16% at 55% 100%, rgba(127, 139, 156, .6), transparent 75%),
+    linear-gradient(175deg, #ecdfc4 0%, #e4d2ad 55%, #d9c6a2 100%);
+  --texte: #f1ece1;
+  --doux: #b9c1cc;
+  --accent: #e0574a;
+  --accent-ombre: #7d1f19;
+  --police: "Shippori Mincho", "Noto Serif JP", "Noto Serif", Georgia, "Times New Roman", serif;
+
+  --pastille-fond: #1d1b26;
+  --pastille-texte: #f1ece1;
+
+  --carte-fond: linear-gradient(165deg, #2a2838 0%, #17161e 70%);
+  --carte-bord: 2px solid #17161e;
+  --carte-ombre: 0 14px 30px rgba(60, 40, 15, .4);
+  --rayon: 16px;
+  --rayon-petit: 8px;
+  --rayon-bouton: 10px;
+
+  --nombre: #f1ece1;
+  --nombre-ombre: 3px 3px 0 #c2362b;
+
+  --case-1: #8d98a8; --case-2: #7f8b9c; --case-3: #8d98a8; --case-4: #7f8b9c;
+  --case-bord: none;
+  --case-texte: #17161e;
+
+  --bouton-fond: #c2362b; --bouton-texte: #fff6ec; --bouton-ombre: #7d1f19;
+  --bouton2-fond: #2c2a3a; --bouton2-texte: #d9dee6; --bouton2-ombre: #0c0b10;
+
+  --dlg-fond: #1d1b26;
+  --champ-fond: #121118;
+  --champ-bord: #4a4a5e;
+  --voile: rgba(30, 20, 10, .6);
+
+  /* Le Fuji devient un masque : visage blanc, frange noire, cornes et petits crocs */
+  --f-mont: #ece7dc; --f-trait: #1d1b26; --f-neige: #1d1b26; --f-soleil: #c2362b;
+  --f-nuage: rgba(255, 252, 244, .85); --f-yeux: #1d1b26; --f-reflet: #fff; --f-joue: #ee9c93;
+  --f-lueur: drop-shadow(0 3px 0 rgba(60, 40, 15, .18));
+
+  /* Des flammes rouges et des fleurs blanches à la place des pétales */
+  --petale-1: #c2362b; --petale-2: #fbf7ee; --petale-3: #e0574a; --petale-4: #f3b1a6;
+  --petale-forme: 0 60% 50% 60%;
+}
+
 /* ============================================================
    Mise en page (commune à tous les thèmes)
    ============================================================ */
@@ -274,6 +325,8 @@ body {
 .f-reflet { fill: var(--f-reflet); }
 .f-joue { fill: var(--f-joue); opacity: .8; }
 .f-bouche { fill: none; stroke: var(--f-yeux); stroke-width: 3; stroke-linecap: round; }
+/* Cornes et crocs : seulement dans le thème Yōkai */
+.f-cornes, .f-crocs { display: none; }
 
 .carte {
   position: relative;
@@ -311,6 +364,7 @@ body {
   font-weight: 700;
   line-height: 1.4;
   word-break: keep-all; /* ne coupe pas les mots japonais en deux */
+  text-wrap: balance; /* évite un dernier mot tout seul sur sa ligne */
 }
 
 .date { margin-top: 14px !important; font-size: 14px; color: var(--doux); }
@@ -423,7 +477,8 @@ dialog input:not([type="radio"]):not([type="checkbox"]) {
   border-radius: var(--rayon-petit);
   background: var(--champ-fond);
 }
-:root[data-theme="neon"] dialog input, :root[data-theme="cyberpunk"] dialog input { color-scheme: dark; }
+:root[data-theme="neon"] dialog input, :root[data-theme="cyberpunk"] dialog input,
+:root[data-theme="yokai"] dialog input { color-scheme: dark; }
 dialog input:focus { outline: none; border-color: var(--accent); }
 /* Les deux prénoms, côte à côte, à égalité */
 .voyageuses { border: 0; padding: 0; margin: 0 0 14px; }
@@ -476,6 +531,8 @@ dialog label.case input { width: 20px; height: 20px; margin: 0; accent-color: va
 .apercu-cyberpunk { background: linear-gradient(115deg, #fcee0a 0 45%, #0b0b0f 45% 80%, #00f0ff 80% 86%, #ff003c 86%); border-radius: 0; }
 .apercu-washi { background: radial-gradient(circle at 72% 40%, #b7282e 0 9px, transparent 10px), linear-gradient(180deg, #f7f0e1 0 55%, #2f4f7f 55%); }
 .apercu-ghibli { background: radial-gradient(ellipse 22px 9px at 28% 34%, #fff 0 60%, transparent 100%), radial-gradient(circle at 76% 30%, #ffd166 0 6px, transparent 7px), radial-gradient(ellipse 70% 55% at 30% 115%, #7fba6c 0 99%, transparent 100%), radial-gradient(ellipse 70% 45% at 90% 115%, #a3d48a 0 99%, transparent 100%), linear-gradient(180deg, #7cc4ee, #d6f0f6); }
+
+.apercu-yokai { background: radial-gradient(circle at 78% 30%, #c2362b 0 5px, transparent 6px), radial-gradient(circle at 46% 58%, #ece7dc 0 13px, transparent 14px), radial-gradient(ellipse 42% 120% at 14% 40%, #1d1b26 0 99%, transparent 100%), radial-gradient(ellipse 50% 60% at 90% 110%, #8d98a8 0 99%, transparent 100%), linear-gradient(160deg, #ecdfc4, #d6b877); }
 
 /* Pétales (ou éclats lumineux selon le thème) */
 .petales { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
@@ -552,6 +609,17 @@ body.jour-j .nombre { animation: saute 1s ease-in-out infinite alternate; }
 :root[data-theme="ghibli"] .petale { opacity: .75; }
 :root[data-theme="ghibli"] .pastille { box-shadow: 0 2px 0 rgba(60, 100, 80, .12); }
 :root[data-theme="ghibli"] .f-soleil { filter: drop-shadow(0 0 6px rgba(255, 209, 102, .8)); }
+
+/* Yōkai : masque à cornes, touches de rouge et de rose saumon */
+:root[data-theme="yokai"] .f-cornes { display: inline; fill: #f0b4a8; stroke: #1d1b26; stroke-width: 2; stroke-linejoin: round; }
+:root[data-theme="yokai"] .f-crocs { display: inline; fill: #fff; stroke: #1d1b26; stroke-width: 1.2; stroke-linejoin: round; }
+:root[data-theme="yokai"] .f-bouche { stroke: #c2362b; }
+:root[data-theme="yokai"] .carte { outline: 1px solid rgba(224, 87, 74, .55); outline-offset: -7px; }
+:root[data-theme="yokai"] .avant { color: #f3b1a6; letter-spacing: .12em; }
+:root[data-theme="yokai"] .pastille { letter-spacing: .1em; box-shadow: 3px 3px 0 #c2362b; }
+:root[data-theme="yokai"] .minuteur span { color: #2c2a3a; }
+:root[data-theme="yokai"] .reglages { color: #1d1b26; }
+:root[data-theme="yokai"] .petale { opacity: .8; }
 
 @media (prefers-reduced-motion: reduce) {
   .petale, .f-nuage { animation: none; }
