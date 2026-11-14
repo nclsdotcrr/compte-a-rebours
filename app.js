@@ -7,7 +7,7 @@
   // Dates et heures restent corrigeables dans les Réglages si un vol change.
   var DATE_DEPART = "2027-02-06", HEURE_DEPART = "18:30"; // décollage
   var DATE_RETOUR = "2027-02-18", HEURE_RETOUR = "16:30"; // atterrissage
-  var NOM = "Miniva"; // nom affiché par défaut, modifiable dans les Réglages
+  var NOM = "Mivana"; // nom affiché par défaut, modifiable dans les Réglages
   var THEMES = { kawaii: "#ffd6e7", neon: "#12062b", cyberpunk: "#0b0b0f", washi: "#f7f0e1", ghibli: "#8fd0f5", yokai: "#e4d2ad" };
 
   var $ = function (id) { return document.getElementById(id); };
@@ -131,7 +131,7 @@
       if (res.jours > 1) {
         nombre = String(res.jours);
         unite = "jours";
-        message = "Plus que " + res.jours + " jours avant le retour" + de + " ! 🏠";
+        message = "Plus que " + res.jours + " jours avant le retour" + de + " ! 🇫🇷";
       } else if (res.jours === 1) {
         nombre = "1";
         unite = "jour";
@@ -142,8 +142,8 @@
         unite = "";
         // « envole » : l'heure du vol est passée (ici, l'atterrissage).
         message = res.envole
-          ? "Atterrissage ! おかえり" + virgule + " 🏠"
-          : "C'est aujourd'hui ! Retour" + de + " 🏠";
+          ? "Atterrissage ! おかえり" + virgule + " 🇫🇷"
+          : "C'est aujourd'hui ! Retour" + de + " 🇫🇷";
       } else {
         pastille = "おかえり ・ de retour de " + VILLE;
         avant = "おかえり";

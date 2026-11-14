@@ -1,6 +1,7 @@
 /* Garde l'appli en cache pour qu'elle marche sans réseau.
-   Changer VERSION après chaque modification des fichiers. */
-var VERSION = "japon-v11";
+   Après chaque modification des fichiers : changer VERSION ici ET le « ?v= »
+   des trois liens de index.html (preparer-publication.sh vérifie les deux). */
+var VERSION = "japon-v12";
 var FICHIERS = [
   "./",
   "index.html",
@@ -14,7 +15,11 @@ var FICHIERS = [
 ];
 
 self.addEventListener("install", function (e) {
-  e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(FICHIERS); }));
+  // « reload » : télécharge vraiment chaque fichier, sans reprendre une copie
+  // gardée par le navigateur (sinon une ancienne version peut se glisser dedans).
+  e.waitUntil(caches.open(VERSION).then(function (c) {
+    return c.addAll(FICHIERS.map(function (f) { return new Request(f, { cache: "reload" }); }));
+  }));
   self.skipWaiting();
 });
 
@@ -37,7 +42,9 @@ self.addEventListener("fetch", function (e) {
   var req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
   e.respondWith(
-    fetch(req).then(function (r) {
+    // « no-cache » : demande toujours au site si le fichier a changé
+    // (réponse très légère quand il n'a pas changé).
+    fetch(req.url, { cache: "no-cache" }).then(function (r) {
       if (r.ok && r.type === "basic" && !r.redirected) {
         var copie = r.clone();
         caches.open(VERSION).then(function (c) { c.put(req, copie); });
