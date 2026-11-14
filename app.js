@@ -7,19 +7,24 @@
   // Dates et heures restent corrigeables dans les Réglages si un vol change.
   var DATE_DEPART = "2027-02-06", HEURE_DEPART = "18:30"; // décollage
   var DATE_RETOUR = "2027-02-18", HEURE_RETOUR = "16:30"; // atterrissage
-  var PRENOMS = ["Mino", "Ivan"]; // des pseudos : le site est public
+  var NOM = "Miniva"; // nom affiché par défaut, modifiable dans les Réglages
   var THEMES = { kawaii: "#ffd6e7", neon: "#12062b", cyberpunk: "#0b0b0f", washi: "#f7f0e1", ghibli: "#8fd0f5", yokai: "#e4d2ad" };
 
   var $ = function (id) { return document.getElementById(id); };
 
   /* ---------- Réglages ----------
-     Gardés uniquement sur le téléphone : le mode (départ ou retour), le thème
-     et, seulement si on les corrige, les dates et heures des vols. */
+     Gardés uniquement sur le téléphone : le mode (départ ou retour), le thème et,
+     seulement si on les change, le nom affiché et les dates et heures des vols. */
+  function texte(v) { return typeof v === "string" ? v.trim().slice(0, 40) : ""; }
+
   function nettoyer(s) {
+    // Prénoms saisis dans une version précédente (deux cases) : on les garde.
+    var anciens = Array.isArray(s.prenoms) ? s.prenoms.map(texte).filter(Boolean).join(" & ") : "";
     // Les dates saisies avant que le voyage soit fixé (réglages sans « v: 2 »)
     // sont ignorées : c'est le voyage fixé ci-dessus qui s'applique.
     var perso = s.v === 2;
     return {
+      nom: texte(s.nom) || anciens || NOM,
       // « depart » : pour qui part, le décompte va jusqu'au départ.
       // « retour » : les parents comptent jusqu'au retour.
       mode: s.mode === "retour" ? "retour" : "depart",
@@ -40,9 +45,9 @@
     if (r) return r;
 
     // Facultatif : un lien peut préremplir les réglages à la toute première ouverture.
-    // ?mode=retour&theme=neon
+    // ?mode=retour&theme=neon&nom=Autre
     var q = new URLSearchParams(location.search);
-    r = nettoyer({ mode: q.get("mode"), theme: q.get("theme") });
+    r = nettoyer({ mode: q.get("mode"), nom: q.get("nom"), theme: q.get("theme") });
     if (q.toString()) {
       sauverReglages(r);
       // Retire les paramètres de l'adresse (et donc de l'historique de la page).
@@ -52,10 +57,11 @@
   }
 
   function sauverReglages(r) {
-    // Une date ou une heure identique à celle du voyage fixé n'est pas enregistrée :
+    // Une valeur identique à celle fixée en haut du fichier n'est pas enregistrée :
     // le téléphone suivra ainsi une correction publiée plus tard.
     var c = {
       v: 2,
+      nom: r.nom === NOM ? "" : r.nom,
       mode: r.mode,
       theme: r.theme,
       date: r.date === DATE_DEPART ? "" : r.date,
@@ -95,9 +101,11 @@
 
   function deux(n) { return String(n).padStart(2, "0"); }
 
-  /* Les deux pseudos sont à égalité : leur ordre s'inverse chaque jour. */
+  /* Le nom affiché. Si on y écrit deux prénoms séparés par « & », ils sont
+     à égalité : leur ordre s'inverse chaque jour. */
   function noms(jours) {
-    var p = Math.abs(jours) % 2 === 1 ? [PRENOMS[1], PRENOMS[0]] : PRENOMS;
+    var p = reglages.nom.split("&").map(function (x) { return x.trim(); }).filter(Boolean);
+    if (p.length === 2 && Math.abs(jours) % 2 === 1) p = [p[1], p[0]];
     return p.join(" & ");
   }
 
@@ -107,7 +115,7 @@
       ? Countdown.calculer(reglages.retour, reglages.heureRetour)
       : Countdown.calculer(reglages.date, reglages.heure);
     var pastille = "東京まで ・ direction " + VILLE;
-    var avant = "あと", nombre, unite, message, dateTxt, n;
+    var avant = "あと", nombre, unite, message, dateTxt, n, virgule, de;
 
     if (!res) {
       nombre = "?";
@@ -116,55 +124,58 @@
       dateTxt = "";
     } else if (retour) {
       n = noms(res.jours);
+      virgule = n ? ", " + n : "";
+      de = n ? " de " + n : "";
       pastille = "帰りまで ・ retour de " + VILLE;
       dateTxt = texteVol("Arrivée", reglages.retour, reglages.heureRetour);
       if (res.jours > 1) {
         nombre = String(res.jours);
         unite = "jours";
-        message = "Plus que " + res.jours + " jours avant le retour de " + n + " ! 🏠";
+        message = "Plus que " + res.jours + " jours avant le retour" + de + " ! 🏠";
       } else if (res.jours === 1) {
         nombre = "1";
         unite = "jour";
-        message = "Retour demain ! Dernière nuit sans " + n + " 🌙";
+        message = "Retour demain ! Dernière nuit" + (n ? " sans " + n : "") + " 🌙";
       } else if (res.jours === 0) {
         avant = "今日！";
         nombre = "Jour J";
         unite = "";
         // « envole » : l'heure du vol est passée (ici, l'atterrissage).
         message = res.envole
-          ? "Atterrissage ! おかえり, " + n + " 🏠"
-          : "C'est aujourd'hui ! Retour de " + n + " 🏠";
+          ? "Atterrissage ! おかえり" + virgule + " 🏠"
+          : "C'est aujourd'hui ! Retour" + de + " 🏠";
       } else {
         pastille = "おかえり ・ de retour de " + VILLE;
         avant = "おかえり";
         nombre = String(-res.jours);
         unite = (-res.jours > 1 ? "jours" : "jour") + " depuis le retour";
-        message = n + " : de retour ! 🌸";
+        message = (n ? n + " : de" : "De") + " retour ! 🌸";
       }
     } else {
       n = noms(res.jours);
+      virgule = n ? ", " + n : "";
       dateTxt = texteVol("Départ", reglages.date, reglages.heure);
       if (res.jours > 1) {
         nombre = String(res.jours);
         unite = "jours";
-        message = n + " : plus que " + res.jours + " jours avant " + VILLE + " ! 🍣🥢";
+        message = (n ? n + " : plus" : "Plus") + " que " + res.jours + " jours avant " + VILLE + " ! 🍣🥢";
       } else if (res.jours === 1) {
         nombre = "1";
         unite = "jour";
-        message = "C'est demain, " + n + " ! Dernière nuit avant " + VILLE + " 🌙";
+        message = "C'est demain" + virgule + " ! Dernière nuit avant " + VILLE + " 🌙";
       } else if (res.jours === 0) {
         avant = "今日！";
         nombre = "Jour J";
         unite = "";
         message = res.envole
-          ? "Décollage ! Bon vol, " + n + " 🍣🥢 いってらっしゃい"
-          : "C'est aujourd'hui, " + n + " ! いってらっしゃい 🍣🥢";
+          ? "Décollage ! Bon vol" + virgule + " 🍣🥢 いってらっしゃい"
+          : "C'est aujourd'hui" + virgule + " ! いってらっしゃい 🍣🥢";
       } else {
         pastille = "東京で ・ à " + VILLE;
         avant = "東京で";
         nombre = String(-res.jours);
         unite = -res.jours > 1 ? "jours à " + VILLE : "jour à " + VILLE;
-        message = "Bienvenue à " + VILLE + ", " + n + " ! ようこそ 🌸";
+        message = "Bienvenue à " + VILLE + virgule + " ! ようこそ 🌸";
       }
     }
 
@@ -200,11 +211,19 @@
     if (!document.hidden) afficher();
   });
 
+  /* ---------- Interrupteur Départ / Retour (écran principal) ---------- */
+  $("bascule").checked = reglages.mode === "retour";
+  $("bascule").addEventListener("change", function () {
+    reglages.mode = this.checked ? "retour" : "depart";
+    sauverReglages(reglages);
+    relancer();
+  });
+
   /* ---------- Fenêtre de réglages ---------- */
   var dlg = $("dialogue");
   function ouvrirReglages() {
-    var mode = document.querySelector('input[name="mode"][value="' + reglages.mode + '"]');
-    if (mode) mode.checked = true;
+    $("champ-nom").value = reglages.nom;
+    $("champ-nom").placeholder = NOM;
     $("champ-date").value = reglages.date;
     $("champ-heure").value = reglages.heure;
     $("champ-retour").value = reglages.retour;
@@ -229,7 +248,8 @@
     // Une heure laissée vide revient à l'heure fixée.
     reglages = nettoyer({
       v: 2,
-      mode: (document.querySelector('input[name="mode"]:checked') || {}).value,
+      nom: $("champ-nom").value, // laissé vide : retour au nom par défaut
+      mode: reglages.mode,
       date: d,
       heure: $("champ-heure").value,
       retour: ret,

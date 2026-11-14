@@ -59,6 +59,13 @@
       <p class="date" id="date"></p>
     </section>
 
+    <div class="bas">
+    <label class="bascule">
+      <input type="checkbox" id="bascule" role="switch" aria-label="Compter jusqu'au retour (sinon : jusqu'au départ)">
+      <span class="curseur" aria-hidden="true"></span>
+      <span class="cote cote-depart">🧳 Départ</span>
+      <span class="cote cote-retour">🏠 Retour</span>
+    </label>
     <button class="reglages" id="ouvrir" type="button" aria-label="Réglages" title="Réglages">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <g fill="none" stroke="currentColor" stroke-linecap="round">
@@ -73,17 +80,15 @@
         </g>
       </svg>
     </button>
+    </div>
   </main>
 
   <dialog id="dialogue">
     <form method="dialog" id="formulaire">
       <h2>Réglages ✿</h2>
-      <fieldset class="mode">
-        <legend>Je compte les jours jusqu'au…</legend>
-        <label><input type="radio" name="mode" value="depart"><span>🧳 Départ</span></label>
-        <label><input type="radio" name="mode" value="retour"><span>🏠 Retour</span></label>
-      </fieldset>
-      <p class="aide">Départ pour qui part, Retour pour les parents.</p>
+      <label>Nom affiché
+        <input type="text" id="champ-nom" maxlength="40" autocomplete="off">
+      </label>
       <fieldset class="vol">
         <legend>Départ (décollage)</legend>
         <div class="date-heure">

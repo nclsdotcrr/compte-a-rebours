@@ -429,6 +429,43 @@ button.secondaire, .reglages {
 .minuteur div { padding: clamp(4px, 1dvh, 10px) 2px clamp(3px, .8dvh, 8px); }
 .minuteur b { font-size: clamp(18px, 3dvh, 24px); }
 .date { margin-top: clamp(8px, 1.6dvh, 14px) !important; font-size: clamp(12px, 1.8dvh, 14px); }
+/* Bas de l'écran : l'interrupteur Départ / Retour au centre, la roue à droite */
+.bas { display: grid; grid-template-columns: 44px auto 44px; align-items: center; gap: 8px; }
+.bascule {
+  grid-column: 2;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  height: 40px;
+  border-radius: var(--rayon-bouton);
+  background: var(--bouton2-fond);
+  box-shadow: 0 3px 0 var(--bouton2-ombre);
+  color: var(--bouton2-texte);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+.bascule input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+/* Le curseur glisse d'un côté à l'autre */
+.curseur {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  border-radius: var(--rayon-bouton);
+  background: var(--bouton-fond);
+  transition: transform .28s cubic-bezier(.3, 1.3, .5, 1);
+  pointer-events: none;
+}
+.bascule input:checked ~ .curseur { transform: translateX(100%); }
+.cote { position: relative; padding: 0 14px; text-align: center; white-space: nowrap; transition: color .2s; pointer-events: none; }
+.bascule input:not(:checked) ~ .cote-depart,
+.bascule input:checked ~ .cote-retour { color: var(--bouton-texte); }
+.bascule input:focus-visible ~ .curseur { outline: 2px solid var(--accent); outline-offset: 3px; }
+
 /* Réglages : une simple roue crantée, discrète */
 .reglages {
   display: grid;
@@ -480,24 +517,6 @@ dialog input:not([type="radio"]):not([type="checkbox"]) {
 :root[data-theme="neon"] dialog input, :root[data-theme="cyberpunk"] dialog input,
 :root[data-theme="yokai"] dialog input { color-scheme: dark; }
 dialog input:focus { outline: none; border-color: var(--accent); }
-/* Interrupteur Départ / Retour */
-.mode { border: 0; padding: 0; margin: 0 0 8px; display: grid; grid-template-columns: 1fr 1fr; }
-.mode legend { font-weight: 700; font-size: 15px; margin-bottom: 8px; padding: 0; }
-.mode label {
-  position: relative;
-  margin: 0;
-  padding: 11px 6px;
-  border: 2px solid var(--champ-bord);
-  background: var(--champ-fond);
-  text-align: center;
-  cursor: pointer;
-}
-.mode label:first-of-type { border-right: 0; border-radius: var(--rayon-bouton) 0 0 var(--rayon-bouton); }
-.mode label:last-of-type { border-left: 0; border-radius: 0 var(--rayon-bouton) var(--rayon-bouton) 0; }
-.mode input { position: absolute; opacity: 0; pointer-events: none; }
-.mode label:has(input:checked) { background: var(--bouton-fond); border-color: var(--bouton-fond); color: var(--bouton-texte); }
-.mode label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
-
 /* Un vol : la date et l'heure sur la même ligne */
 .vol { border: 0; padding: 0; margin: 0 0 12px; min-width: 0; }
 .vol legend { font-weight: 700; font-size: 15px; padding: 0; }
@@ -638,6 +657,7 @@ body.jour-j .nombre { animation: saute 1s ease-in-out infinite alternate; }
 :root[data-theme="yokai"] .petale { opacity: .8; }
 
 @media (prefers-reduced-motion: reduce) {
+  .curseur, .cote { transition: none; }
   .petale, .f-nuage { animation: none; }
   .petale { display: none; }
   .nombre { animation: none !important; }
