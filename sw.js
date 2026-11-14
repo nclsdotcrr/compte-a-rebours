@@ -1,7 +1,7 @@
 /* Garde l'appli en cache pour qu'elle marche sans réseau.
    Après chaque modification des fichiers : changer VERSION ici ET le « ?v= »
    des trois liens de index.html (preparer-publication.sh vérifie les deux). */
-var VERSION = "japon-v12";
+var VERSION = "japon-v13";
 var FICHIERS = [
   "./",
   "index.html",

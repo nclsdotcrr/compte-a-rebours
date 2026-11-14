@@ -109,13 +109,32 @@
     return p.join(" & ");
   }
 
+  /* L'heure qu'il est dans une ville, avec ☀️ le jour et 🌙 la nuit (22 h – 7 h). */
+  var fmtVilles = {};
+  function heureA(tz, t) {
+    var f = fmtVilles[tz] || (fmtVilles[tz] = new Intl.DateTimeFormat("fr-FR", {
+      timeZone: tz, hour: "numeric", minute: "2-digit", hourCycle: "h23"
+    }));
+    var p = {};
+    f.formatToParts(new Date(t)).forEach(function (x) { p[x.type] = x.value; });
+    var h = +p.hour % 24;
+    return h + " h " + p.minute + " " + (h >= 7 && h < 22 ? "☀️" : "🌙");
+  }
+
+  // Vol passé : la date est passée, ou c'est le jour même et l'heure du vol est passée.
+  function passe(r) { return !!r && (r.jours < 0 || (r.jours === 0 && r.envole)); }
+
   function afficher() {
-    var retour = reglages.mode === "retour";
-    var res = retour
-      ? Countdown.calculer(reglages.retour, reglages.heureRetour)
-      : Countdown.calculer(reglages.date, reglages.heure);
+    var t = Date.now();
+    var resDep = Countdown.calculer(reglages.date, reglages.heure, t);
+    var resRet = Countdown.calculer(reglages.retour, reglages.heureRetour, t);
+    var rentrees = passe(resRet);
+    var auJapon = passe(resDep) && !!resRet && !rentrees;
+    // Une fois rentrées, l'écran « Départ » affiche lui aussi le retour.
+    var retour = reglages.mode === "retour" || rentrees;
+    var res = retour ? resRet : resDep;
     var pastille = "東京まで ・ direction " + VILLE;
-    var avant = "あと", nombre, unite, message, dateTxt, n, virgule, de;
+    var avant = "あと", nombre, unite, message, dateTxt, n, virgule, de, sejour = null;
 
     if (!res) {
       nombre = "?";
@@ -151,6 +170,12 @@
         unite = (-res.jours > 1 ? "jours" : "jour") + " depuis le retour";
         message = (n ? n + " : de" : "De") + " retour ! 🌸";
       }
+      // Pendant le séjour, côté parents : le jour du voyage et l'heure à Tokyo.
+      if (auJapon) {
+        var jour = -resDep.jours, total = resRet.jours - resDep.jours;
+        sejour = [jour === 0 ? "En vol vers " + VILLE + " ✈️" : "Jour " + jour + " sur " + total + " au Japon",
+          "🇯🇵 À " + VILLE + " : " + heureA("Asia/Tokyo", t)];
+      }
     } else {
       n = noms(res.jours);
       virgule = n ? ", " + n : "";
@@ -177,6 +202,12 @@
         unite = -res.jours > 1 ? "jours à " + VILLE : "jour à " + VILLE;
         message = "Bienvenue à " + VILLE + virgule + " ! ようこそ 🌸";
       }
+      // Pendant le séjour, côté voyageuses : l'heure à Paris (pour appeler) et le retour.
+      if (auJapon) {
+        var r = resRet.jours;
+        sejour = ["🇫🇷 À Paris : " + heureA("Europe/Paris", t),
+          r > 1 ? "retour dans " + r + " jours" : r === 1 ? "retour demain" : "retour aujourd'hui"];
+      }
     }
 
     $("pastille").textContent = pastille;
@@ -186,6 +217,19 @@
     $("unite").textContent = unite;
     $("unite").hidden = !unite;
     $("message").textContent = message;
+    // Deux lignes : le jour du voyage (ou le retour), puis l'heure de l'autre ville.
+    var sj = $("sejour"), texteSejour = sejour ? sejour.join(" ・ ") : "";
+    if (sj.dataset.texte !== texteSejour) {
+      sj.dataset.texte = texteSejour;
+      sj.textContent = "";
+      (sejour || []).forEach(function (morceau, k) {
+        var e = document.createElement("span");
+        e.textContent = morceau;
+        sj.appendChild(e);
+      });
+    }
+    sj.hidden = !sejour;
+    document.body.classList.toggle("en-sejour", !!sejour);
     $("date").textContent = dateTxt;
     $("date").hidden = !dateTxt;
     document.body.classList.toggle("jour-j", !!res && res.jours === 0);
@@ -199,7 +243,230 @@
       $("mm").textContent = deux(c.m);
       $("ms").textContent = deux(c.s);
     }
+
+    feter(res, retour);
+    afficherMot(t);
   }
+
+  /* ---------- Confettis aux grandes étapes ----------
+     Départ : J-100, J-50, J-30, J-7, J-1 et le décollage.
+     Retour : J-7, J-1 et l'atterrissage.
+     Une seule fois par étape (retenu sur le téléphone) ; toucher la carte les relance ce jour-là. */
+  var CLE_FETES = CLE + "-fetes";
+  var fetesVues = {};
+  try { (JSON.parse(localStorage.getItem(CLE_FETES) || "[]") || []).forEach(function (id) { fetesVues[id] = 1; }); } catch (e) {}
+  var feteDuJour = null;
+
+  function feter(res, retour) {
+    var etape = null;
+    if (res) {
+      if (res.jours === 0 && res.envole) etape = retour ? "atterrissage" : "decollage";
+      else if ((retour ? [7, 1] : [100, 50, 30, 7, 1]).indexOf(res.jours) > -1) etape = (retour ? "r" : "d") + res.jours;
+    }
+    feteDuJour = etape;
+    if (!etape) return;
+    var id = etape + "@" + (retour ? reglages.retour : reglages.date);
+    if (fetesVues[id]) return;
+    fetesVues[id] = 1;
+    try { localStorage.setItem(CLE_FETES, JSON.stringify(Object.keys(fetesVues).slice(-30))); } catch (e) {}
+    confettis();
+  }
+
+  var reduit = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var toile = null;
+  function confettis() {
+    if (reduit || toile || document.hidden) return;
+    toile = document.createElement("canvas");
+    toile.className = "confettis";
+    toile.setAttribute("aria-hidden", "true");
+    document.body.appendChild(toile);
+    var moi = toile;
+    var W = innerWidth, H = innerHeight, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    toile.width = W * dpr;
+    toile.height = H * dpr;
+    var cx = toile.getContext("2d");
+    cx.scale(dpr, dpr);
+    // Les couleurs du thème choisi
+    var st = getComputedStyle(document.documentElement);
+    var couleurs = ["--accent", "--petale-1", "--petale-2", "--petale-3", "--petale-4", "--nombre"]
+      .map(function (v) { return st.getPropertyValue(v).trim(); }).filter(Boolean);
+    var bouts = [];
+    for (var i = 0; i < 160; i++) {
+      var a = -Math.PI / 2 + (Math.random() - 0.5) * 1.7, v = 7 + Math.random() * 9;
+      bouts.push({
+        x: W / 2 + (Math.random() - 0.5) * W * 0.3, y: H * 0.5,
+        vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+        r: Math.random() * 6.3, vr: (Math.random() - 0.5) * 0.3, o: Math.random() * 6.3,
+        w: 6 + Math.random() * 6, h: 5 + Math.random() * 6, c: couleurs[i % couleurs.length]
+      });
+    }
+    var debut = null;
+    function image(now) {
+      if (debut === null) debut = now;
+      var e = now - debut;
+      cx.clearRect(0, 0, W, H);
+      cx.globalAlpha = Math.max(0, 1 - Math.max(0, e - 3500) / 1500);
+      bouts.forEach(function (p) {
+        p.vx *= 0.96;
+        p.vy = p.vy * 0.96 + 0.25;
+        p.x += p.vx + Math.sin(p.o + e / 300) * 0.8;
+        p.y += p.vy;
+        p.r += p.vr;
+        cx.save();
+        cx.translate(p.x, p.y);
+        cx.rotate(p.r);
+        cx.fillStyle = p.c;
+        cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r * 2)) + 1);
+        cx.restore();
+      });
+      if (e < 5000 && toile === moi) requestAnimationFrame(image);
+      else finir();
+    }
+    function finir() { moi.remove(); if (toile === moi) toile = null; }
+    requestAnimationFrame(image);
+    setTimeout(finir, 6000); // au cas où l'animation serait mise en pause
+  }
+  document.querySelector(".carte").addEventListener("click", function () { if (feteDuJour) confettis(); });
+
+  /* ---------- Mot japonais du jour ----------
+     [japonais, rōmaji, prononciation à la française, sens]. Le même mot pour tout le monde
+     le même jour ; la liste recommence au début une fois finie. */
+  var MOTS = [
+    ["こんにちは", "konnichiwa", "kon-ni-tchi-wa", "bonjour"],
+    ["ありがとう", "arigatō", "a-ri-ga-toh", "merci"],
+    ["すみません", "sumimasen", "sou-mi-ma-sène", "pardon, excusez-moi"],
+    ["おはよう", "ohayō", "o-ha-yoh", "bonjour (le matin)"],
+    ["こんばんは", "konbanwa", "kom-ban-wa", "bonsoir"],
+    ["はい", "hai", "haï", "oui"],
+    ["いいえ", "iie", "i-i-é", "non"],
+    ["おいしい", "oishii", "o-i-chii", "c'est bon ! (délicieux)"],
+    ["いただきます", "itadakimasu", "i-ta-da-ki-mass", "bon appétit (avant de manger)"],
+    ["ごちそうさまでした", "gochisōsama deshita", "go-tchi-soh-sa-ma dé-chta", "merci pour le repas"],
+    ["かわいい", "kawaii", "ka-wa-ii", "mignon"],
+    ["すごい", "sugoi", "sou-goï", "génial ! incroyable !"],
+    ["おねがいします", "onegai shimasu", "o-né-gaï chi-mass", "s'il vous plaît"],
+    ["これをください", "kore o kudasai", "ko-ré o kou-da-saï", "je voudrais ceci, s'il vous plaît"],
+    ["いくらですか", "ikura desu ka", "i-kou-ra dess ka", "combien ça coûte ?"],
+    ["トイレはどこですか", "toire wa doko desu ka", "toï-ré wa do-ko dess ka", "où sont les toilettes ?"],
+    ["わかりません", "wakarimasen", "wa-ka-ri-ma-sène", "je ne comprends pas"],
+    ["えいごをはなせますか", "eigo o hanasemasu ka", "é-i-go o ha-na-sé-mass ka", "vous parlez anglais ?"],
+    ["もういちど", "mō ichido", "moh i-tchi-do", "encore une fois"],
+    ["ゆっくり", "yukkuri", "youk-kou-ri", "lentement"],
+    ["だいじょうぶ", "daijōbu", "daï-djoh-bou", "ça va, pas de souci"],
+    ["ちょっとまって", "chotto matte", "tchot-to mat-té", "attends un peu !"],
+    ["ほんとう？", "hontō?", "hone-toh", "c'est vrai ?"],
+    ["たのしい", "tanoshii", "ta-no-chii", "amusant, on s'amuse"],
+    ["たのしみ", "tanoshimi", "ta-no-chi-mi", "j'ai hâte !"],
+    ["きれい", "kirei", "ki-réï", "joli, propre"],
+    ["さむい", "samui", "sa-mouï", "il fait froid"],
+    ["あつい", "atsui", "a-tsouï", "il fait chaud, c'est chaud"],
+    ["ゆき", "yuki", "you-ki", "neige"],
+    ["そら", "sora", "so-ra", "ciel"],
+    ["つき", "tsuki", "tsou-ki", "lune"],
+    ["ほし", "hoshi", "ho-chi", "étoile"],
+    ["やま", "yama", "ya-ma", "montagne"],
+    ["ふじさん", "Fuji-san", "fou-dji-sane", "le mont Fuji"],
+    ["うみ", "umi", "ou-mi", "mer"],
+    ["さくら", "sakura", "sa-kou-ra", "fleur de cerisier"],
+    ["じんじゃ", "jinja", "djine-dja", "sanctuaire shinto"],
+    ["おてら", "otera", "o-té-ra", "temple bouddhiste"],
+    ["まつり", "matsuri", "ma-tsou-ri", "fête traditionnelle"],
+    ["はなび", "hanabi", "ha-na-bi", "feu d'artifice"],
+    ["おに", "oni", "o-ni", "ogre à cornes des contes"],
+    ["ようかい", "yōkai", "yoh-kaï", "créature magique des légendes"],
+    ["おめん", "omen", "o-mène", "masque"],
+    ["ねこ", "neko", "né-ko", "chat"],
+    ["いぬ", "inu", "i-nou", "chien"],
+    ["ともだち", "tomodachi", "to-mo-da-tchi", "ami, amie"],
+    ["えがお", "egao", "é-ga-o", "sourire"],
+    ["がんばって", "ganbatte", "gam-bat-té", "courage ! bonne chance !"],
+    ["おげんきですか", "o-genki desu ka", "o-guène-ki dess ka", "comment allez-vous ?"],
+    ["げんきです", "genki desu", "guène-ki dess", "je vais bien"],
+    ["よろしくおねがいします", "yoroshiku onegai shimasu", "yo-ro-chi-kou o-né-gaï chi-mass", "enchanté, enchantée"],
+    ["フランスからきました", "Furansu kara kimashita", "fou-rane-sou ka-ra ki-ma-chta", "je viens de France"],
+    ["おやすみなさい", "oyasumi nasai", "o-ya-sou-mi na-saï", "bonne nuit"],
+    ["さようなら", "sayōnara", "sa-yoh-na-ra", "au revoir"],
+    ["またね", "mata ne", "ma-ta né", "à plus !"],
+    ["みず", "mizu", "mi-zou", "eau"],
+    ["おちゃ", "ocha", "o-tcha", "thé"],
+    ["ごはん", "gohan", "go-hane", "riz, repas"],
+    ["すし", "sushi", "sou-chi", "sushi"],
+    ["らーめん", "rāmen", "raa-mène", "ramen (soupe de nouilles)"],
+    ["いちご", "ichigo", "i-tchi-go", "fraise"],
+    ["あまい", "amai", "a-maï", "sucré"],
+    ["からい", "karai", "ka-raï", "épicé"],
+    ["はし", "hashi", "ha-chi", "baguettes"],
+    ["コンビニ", "konbini", "kom-bi-ni", "supérette ouverte jour et nuit"],
+    ["おみやげ", "omiyage", "o-mi-ya-gué", "souvenir à offrir"],
+    ["しゃしん", "shashin", "cha-chine", "photo"],
+    ["しゃしんをとってもいいですか", "shashin o tottemo ii desu ka", "cha-chine o tot-té-mo ii dess ka", "je peux prendre une photo ?"],
+    ["えき", "eki", "é-ki", "gare"],
+    ["でんしゃ", "densha", "dène-cha", "train"],
+    ["きっぷ", "kippu", "kip-pou", "billet"],
+    ["ちず", "chizu", "tchi-zou", "plan, carte"],
+    ["みぎ", "migi", "mi-gui", "à droite"],
+    ["ひだり", "hidari", "hi-da-ri", "à gauche"],
+    ["まっすぐ", "massugu", "mass-sou-gou", "tout droit"],
+    ["いりぐち", "iriguchi", "i-ri-gou-tchi", "entrée"],
+    ["でぐち", "deguchi", "dé-gou-tchi", "sortie"],
+    ["たすけて", "tasukete", "ta-sou-ké-té", "à l'aide !"],
+    ["いち、に、さん", "ichi, ni, san", "i-tchi, ni, sane", "un, deux, trois"],
+    ["にほん", "Nihon", "ni-hone", "le Japon"],
+    ["とうきょう", "Tōkyō", "toh-kyoh", "Tokyo"],
+    ["ひこうき", "hikōki", "hi-koh-ki", "avion"],
+    ["くうこう", "kūkō", "kou-koh", "aéroport"],
+    ["ようこそ", "yōkoso", "yoh-ko-so", "bienvenue"],
+    ["いってきます", "ittekimasu", "it-té-ki-mass", "j'y vais ! (en partant)"],
+    ["いってらっしゃい", "itterasshai", "it-té-rach-chaï", "bonne route ! (à qui part)"],
+    ["ただいま", "tadaima", "ta-daï-ma", "je suis rentrée !"],
+    ["おかえり", "okaeri", "o-ka-é-ri", "bon retour à la maison !"]
+  ];
+  var DEBUT_MOTS = Date.UTC(2026, 10, 14); // premier mot : le 14 novembre 2026
+  var motAffiche = -1;
+
+  function motDuJour(t) {
+    var p = Countdown.heureParis(t);
+    var aujourdhui = Date.UTC(p.y, p.m - 1, p.d);
+    var iso = p.y + "-" + deux(p.m) + "-" + deux(p.d);
+    // Le jour du départ et le jour du retour, le mot qui va avec.
+    if (iso === reglages.date) return MOTS.length - 3;
+    if (iso === reglages.retour) return MOTS.length - 1;
+    var i = Math.round((aujourdhui - DEBUT_MOTS) / 86400000) % MOTS.length;
+    return i < 0 ? i + MOTS.length : i;
+  }
+
+  function afficherMot(t) {
+    var i = motDuJour(t);
+    if (i === motAffiche) return;
+    motAffiche = i;
+    var m = MOTS[i];
+    $("mot-jp").textContent = m[0];
+    $("mot-jp").classList.toggle("long", m[0].length > 7);
+    $("mot-romaji").textContent = m[1];
+    $("mot-dire").textContent = "« " + m[2] + " »";
+    $("mot-sens").textContent = m[3];
+  }
+
+  // Écouter le mot, si le téléphone a une voix japonaise.
+  var voixJa = null;
+  function chercherVoix() {
+    if (!window.speechSynthesis) return;
+    voixJa = speechSynthesis.getVoices().filter(function (v) { return /^ja/i.test(v.lang); })[0] || null;
+    $("mot-ecouter").hidden = !voixJa;
+  }
+  if (window.speechSynthesis) {
+    chercherVoix();
+    speechSynthesis.addEventListener("voiceschanged", chercherVoix);
+  }
+  $("mot-ecouter").addEventListener("click", function () {
+    if (!voixJa || motAffiche < 0) return;
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(MOTS[motAffiche][0]);
+    u.lang = voixJa.lang;
+    u.voice = voixJa;
+    u.rate = 0.8;
+    speechSynthesis.speak(u);
+  });
 
   var minuterie = null;
   function relancer() {
@@ -307,7 +574,6 @@
   majInstaller();
 
   /* ---------- Pétales ---------- */
-  var reduit = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!reduit) {
     var conteneur = document.querySelector(".petales");
     for (var i = 0; i < 14; i++) {

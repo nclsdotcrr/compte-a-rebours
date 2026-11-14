@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
   <script>
     // Applique le thème enregistré avant l'affichage (évite un flash de couleurs).
     try {
@@ -50,6 +50,7 @@
       <p class="nombre" id="nombre">–</p>
       <p class="unite" id="unite">jours</p>
       <p class="message" id="message"></p>
+      <p class="sejour" id="sejour" hidden></p>
       <div class="minuteur" id="minuteur" hidden>
         <div><b id="mj">0</b><span>j</span></div>
         <div><b id="mh">00</b><span>h</span></div>
@@ -57,6 +58,13 @@
         <div><b id="ms">00</b><span>s</span></div>
       </div>
       <p class="date" id="date"></p>
+    </section>
+
+    <section class="mot" aria-label="Mot japonais du jour">
+      <p class="mot-titre" aria-hidden="true" title="Mot du jour">今日<br>言葉</p>
+      <p class="mot-ligne"><span class="mot-jp" id="mot-jp" lang="ja"></span> <b class="mot-romaji" id="mot-romaji"></b></p>
+      <p class="mot-ligne"><span class="mot-dire" id="mot-dire"></span> ・ <span class="mot-sens" id="mot-sens"></span></p>
+      <button type="button" class="mot-ecouter" id="mot-ecouter" aria-label="Écouter le mot" title="Écouter" hidden>🔊</button>
     </section>
 
     <div class="bas">
@@ -125,7 +133,7 @@
     </form>
   </dialog>
 
-  <script src="countdown.js?v=12"></script>
-  <script src="app.js?v=12"></script>
+  <script src="countdown.js?v=13"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>
