@@ -480,13 +480,29 @@ dialog input:not([type="radio"]):not([type="checkbox"]) {
 :root[data-theme="neon"] dialog input, :root[data-theme="cyberpunk"] dialog input,
 :root[data-theme="yokai"] dialog input { color-scheme: dark; }
 dialog input:focus { outline: none; border-color: var(--accent); }
-/* Les deux prénoms, côte à côte, à égalité */
-.voyageuses { border: 0; padding: 0; margin: 0 0 14px; }
-.voyageuses legend { font-weight: 700; font-size: 15px; padding: 0; }
-.deux-champs { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
-.deux-champs span { margin-top: 6px; font-weight: 800; color: var(--accent); font-size: 18px; }
-dialog label.case { display: flex; align-items: center; gap: 10px; margin-top: -4px; font-weight: 600; }
-dialog label.case input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); }
+/* Interrupteur Départ / Retour */
+.mode { border: 0; padding: 0; margin: 0 0 8px; display: grid; grid-template-columns: 1fr 1fr; }
+.mode legend { font-weight: 700; font-size: 15px; margin-bottom: 8px; padding: 0; }
+.mode label {
+  position: relative;
+  margin: 0;
+  padding: 11px 6px;
+  border: 2px solid var(--champ-bord);
+  background: var(--champ-fond);
+  text-align: center;
+  cursor: pointer;
+}
+.mode label:first-of-type { border-right: 0; border-radius: var(--rayon-bouton) 0 0 var(--rayon-bouton); }
+.mode label:last-of-type { border-left: 0; border-radius: 0 var(--rayon-bouton) var(--rayon-bouton) 0; }
+.mode input { position: absolute; opacity: 0; pointer-events: none; }
+.mode label:has(input:checked) { background: var(--bouton-fond); border-color: var(--bouton-fond); color: var(--bouton-texte); }
+.mode label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Un vol : la date et l'heure sur la même ligne */
+.vol { border: 0; padding: 0; margin: 0 0 12px; min-width: 0; }
+.vol legend { font-weight: 700; font-size: 15px; padding: 0; }
+.date-heure { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 8px; }
+.date-heure input { padding-left: 10px !important; padding-right: 8px !important; }
 
 .aide { font-size: 13px; color: var(--doux); margin: 0 0 16px; line-height: 1.4; }
 .installer { border-top: 1px dashed var(--champ-bord); padding-top: 14px; margin: 4px 0 16px; }

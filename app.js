@@ -3,23 +3,31 @@
 
   var VILLE = "Tokyo";
   var CLE = "compte-a-rebours-japon";
+  // Le voyage, fixé ici pour tout le monde (heures de Paris).
+  // Dates et heures restent corrigeables dans les Réglages si un vol change.
+  var DATE_DEPART = "2027-02-06", HEURE_DEPART = "18:30"; // décollage
+  var DATE_RETOUR = "2027-02-18", HEURE_RETOUR = "16:30"; // atterrissage
+  var PRENOMS = ["Mino", "Ivan"]; // des pseudos : le site est public
   var THEMES = { kawaii: "#ffd6e7", neon: "#12062b", cyberpunk: "#0b0b0f", washi: "#f7f0e1", ghibli: "#8fd0f5", yokai: "#e4d2ad" };
 
   var $ = function (id) { return document.getElementById(id); };
 
   /* ---------- Réglages ----------
-     Gardés uniquement sur le téléphone. Aucun prénom ni aucune date n'est écrit
-     dans les fichiers publiés : au premier lancement, l'appli ouvre les Réglages. */
-  function texte(v) { return typeof v === "string" ? v.trim().slice(0, 30) : ""; }
-
+     Gardés uniquement sur le téléphone : le mode (départ ou retour), le thème
+     et, seulement si on les corrige, les dates et heures des vols. */
   function nettoyer(s) {
-    var p = Array.isArray(s.prenoms) ? s.prenoms : [s.prenom, s.amie];
+    // Les dates saisies avant que le voyage soit fixé (réglages sans « v: 2 »)
+    // sont ignorées : c'est le voyage fixé ci-dessus qui s'applique.
+    var perso = s.v === 2;
     return {
-      date: Countdown.lireDate(s.date) ? s.date : "",
-      heure: Countdown.lireHeure(s.heure) ? s.heure : "",
-      prenoms: [texte(p[0]), texte(p[1])],
-      theme: THEMES[s.theme] ? s.theme : "kawaii",
-      provisoire: !!s.provisoire
+      // « depart » : pour qui part, le décompte va jusqu'au départ.
+      // « retour » : les parents comptent jusqu'au retour.
+      mode: s.mode === "retour" ? "retour" : "depart",
+      date: perso && Countdown.lireDate(s.date) ? s.date : DATE_DEPART,
+      heure: perso && Countdown.lireHeure(s.heure) ? s.heure : HEURE_DEPART,
+      retour: perso && Countdown.lireDate(s.retour) ? s.retour : DATE_RETOUR,
+      heureRetour: perso && Countdown.lireHeure(s.heureRetour) ? s.heureRetour : HEURE_RETOUR,
+      theme: THEMES[s.theme] ? s.theme : "kawaii"
     };
   }
 
@@ -32,15 +40,9 @@
     if (r) return r;
 
     // Facultatif : un lien peut préremplir les réglages à la toute première ouverture.
-    // ?date=AAAA-MM-JJ&heure=HH:MM&prenoms=Prénom1,Prénom2&theme=neon&provisoire=1
+    // ?mode=retour&theme=neon
     var q = new URLSearchParams(location.search);
-    r = nettoyer({
-      date: q.get("date"),
-      heure: q.get("heure"),
-      prenoms: (q.get("prenoms") || "").split(","),
-      theme: q.get("theme"),
-      provisoire: q.get("provisoire") === "1"
-    });
+    r = nettoyer({ mode: q.get("mode"), theme: q.get("theme") });
     if (q.toString()) {
       sauverReglages(r);
       // Retire les paramètres de l'adresse (et donc de l'historique de la page).
@@ -50,7 +52,18 @@
   }
 
   function sauverReglages(r) {
-    try { localStorage.setItem(CLE, JSON.stringify(r)); } catch (e) { /* tant pis */ }
+    // Une date ou une heure identique à celle du voyage fixé n'est pas enregistrée :
+    // le téléphone suivra ainsi une correction publiée plus tard.
+    var c = {
+      v: 2,
+      mode: r.mode,
+      theme: r.theme,
+      date: r.date === DATE_DEPART ? "" : r.date,
+      heure: r.heure === HEURE_DEPART ? "" : r.heure,
+      retour: r.retour === DATE_RETOUR ? "" : r.retour,
+      heureRetour: r.heureRetour === HEURE_RETOUR ? "" : r.heureRetour
+    };
+    try { localStorage.setItem(CLE, JSON.stringify(c)); } catch (e) { /* tant pis */ }
   }
 
   var reglages = chargerReglages();
@@ -69,62 +82,89 @@
     weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC"
   });
 
-  function texteDate(r) {
-    var d = Countdown.lireDate(r.date);
-    var t = "Départ : " + fmtDate.format(new Date(Date.UTC(d.y, d.m - 1, d.d)));
-    var h = Countdown.lireHeure(r.heure);
-    if (h) t += " à " + h.h + " h " + String(h.min).padStart(2, "0") + " (heure de Paris)";
-    if (r.provisoire) t += " · date provisoire";
-    return t;
+  function jourTexte(iso) {
+    var d = Countdown.lireDate(iso);
+    return fmtDate.format(new Date(Date.UTC(d.y, d.m - 1, d.d)));
+  }
+
+  // Exemple : « Départ : samedi 6 février 2027 à 18 h 30 (heure de Paris) »
+  function texteVol(etiquette, date, heure) {
+    var h = Countdown.lireHeure(heure);
+    return etiquette + " : " + jourTexte(date) + " à " + h.h + " h " + deux(h.min) + " (heure de Paris)";
   }
 
   function deux(n) { return String(n).padStart(2, "0"); }
 
-  /* Les deux prénoms sont à égalité : leur ordre s'inverse chaque jour. */
-  function noms(r, jours) {
-    var p = r.prenoms.filter(Boolean);
-    if (p.length === 2 && Math.abs(jours) % 2 === 1) p = [p[1], p[0]];
+  /* Les deux pseudos sont à égalité : leur ordre s'inverse chaque jour. */
+  function noms(jours) {
+    var p = Math.abs(jours) % 2 === 1 ? [PRENOMS[1], PRENOMS[0]] : PRENOMS;
     return p.join(" & ");
   }
 
   function afficher() {
-    var res = Countdown.calculer(reglages.date, reglages.heure);
+    var retour = reglages.mode === "retour";
+    var res = retour
+      ? Countdown.calculer(reglages.retour, reglages.heureRetour)
+      : Countdown.calculer(reglages.date, reglages.heure);
     var pastille = "東京まで ・ direction " + VILLE;
-    var avant, nombre, unite, message, dateTxt;
+    var avant = "あと", nombre, unite, message, dateTxt, n;
 
     if (!res) {
-      avant = "あと";
       nombre = "?";
       unite = "jours";
-      message = "Touchez la roue ⚙︎ pour choisir la date du départ 🍣🥢";
+      message = "Touchez la roue ⚙︎ pour vérifier les dates 🍣🥢";
       dateTxt = "";
-    } else {
-      var n = noms(reglages, res.jours);
-      var virgule = n ? ", " + n : "";
-      dateTxt = texteDate(reglages);
+    } else if (retour) {
+      n = noms(res.jours);
+      pastille = "帰りまで ・ retour de " + VILLE;
+      dateTxt = texteVol("Arrivée", reglages.retour, reglages.heureRetour);
       if (res.jours > 1) {
-        avant = "あと";
         nombre = String(res.jours);
         unite = "jours";
-        message = (n ? n + " : plus" : "Plus") + " que " + res.jours + " jours avant " + VILLE + " ! 🍣🥢";
+        message = "Plus que " + res.jours + " jours avant le retour de " + n + " ! 🏠";
       } else if (res.jours === 1) {
-        avant = "あと";
         nombre = "1";
         unite = "jour";
-        message = "C'est demain" + virgule + " ! Dernière nuit avant " + VILLE + " 🌙";
+        message = "Retour demain ! Dernière nuit sans " + n + " 🌙";
+      } else if (res.jours === 0) {
+        avant = "今日！";
+        nombre = "Jour J";
+        unite = "";
+        // « envole » : l'heure du vol est passée (ici, l'atterrissage).
+        message = res.envole
+          ? "Atterrissage ! おかえり, " + n + " 🏠"
+          : "C'est aujourd'hui ! Retour de " + n + " 🏠";
+      } else {
+        pastille = "おかえり ・ de retour de " + VILLE;
+        avant = "おかえり";
+        nombre = String(-res.jours);
+        unite = (-res.jours > 1 ? "jours" : "jour") + " depuis le retour";
+        message = n + " : de retour ! 🌸";
+      }
+    } else {
+      n = noms(res.jours);
+      dateTxt = texteVol("Départ", reglages.date, reglages.heure);
+      if (res.jours > 1) {
+        nombre = String(res.jours);
+        unite = "jours";
+        message = n + " : plus que " + res.jours + " jours avant " + VILLE + " ! 🍣🥢";
+      } else if (res.jours === 1) {
+        nombre = "1";
+        unite = "jour";
+        message = "C'est demain, " + n + " ! Dernière nuit avant " + VILLE + " 🌙";
       } else if (res.jours === 0) {
         avant = "今日！";
         nombre = "Jour J";
         unite = "";
         message = res.envole
-          ? "Décollage ! Bon vol" + virgule + " 🍣🥢 いってらっしゃい"
-          : "C'est aujourd'hui" + virgule + " ! いってらっしゃい 🍣🥢";
+          ? "Décollage ! Bon vol, " + n + " 🍣🥢 いってらっしゃい"
+          : "C'est aujourd'hui, " + n + " ! いってらっしゃい 🍣🥢";
       } else {
         pastille = "東京で ・ à " + VILLE;
         avant = "東京で";
         nombre = String(-res.jours);
         unite = -res.jours > 1 ? "jours à " + VILLE : "jour à " + VILLE;
-        message = "Bienvenue à " + VILLE + virgule + " ! ようこそ 🌸";
+        message = "Bienvenue à " + VILLE + ", " + n + " ! ようこそ 🌸";
       }
     }
 
@@ -154,8 +194,7 @@
   function relancer() {
     clearInterval(minuterie);
     afficher();
-    // Chaque seconde si l'heure du vol est connue, sinon toutes les 30 s (passage de minuit).
-    minuterie = setInterval(afficher, reglages.heure ? 1000 : 30000);
+    minuterie = setInterval(afficher, 1000);
   }
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) afficher();
@@ -164,11 +203,12 @@
   /* ---------- Fenêtre de réglages ---------- */
   var dlg = $("dialogue");
   function ouvrirReglages() {
-    $("prenom1").value = reglages.prenoms[0];
-    $("prenom2").value = reglages.prenoms[1];
+    var mode = document.querySelector('input[name="mode"][value="' + reglages.mode + '"]');
+    if (mode) mode.checked = true;
     $("champ-date").value = reglages.date;
     $("champ-heure").value = reglages.heure;
-    $("provisoire").checked = reglages.provisoire;
+    $("champ-retour").value = reglages.retour;
+    $("champ-heure-retour").value = reglages.heureRetour;
     var radio = document.querySelector('input[name="theme"][value="' + reglages.theme + '"]');
     if (radio) radio.checked = true;
     dlg.showModal();
@@ -183,13 +223,18 @@
   dlg.addEventListener("close", function () { appliquerTheme(reglages.theme); });
   $("formulaire").addEventListener("submit", function (e) {
     var d = $("champ-date").value;
+    var ret = $("champ-retour").value;
     if (!Countdown.lireDate(d)) { e.preventDefault(); $("champ-date").focus(); return; }
+    if (!Countdown.lireDate(ret)) { e.preventDefault(); $("champ-retour").focus(); return; }
+    // Une heure laissée vide revient à l'heure fixée.
     reglages = nettoyer({
+      v: 2,
+      mode: (document.querySelector('input[name="mode"]:checked') || {}).value,
       date: d,
       heure: $("champ-heure").value,
-      prenoms: [$("prenom1").value, $("prenom2").value],
-      theme: (document.querySelector('input[name="theme"]:checked') || {}).value,
-      provisoire: $("provisoire").checked
+      retour: ret,
+      heureRetour: $("champ-heure-retour").value,
+      theme: (document.querySelector('input[name="theme"]:checked') || {}).value
     });
     sauverReglages(reglages);
     appliquerTheme(reglages.theme);
@@ -259,8 +304,6 @@
   }
 
   relancer();
-  // Premier lancement : pas encore de date, on ouvre directement les Réglages.
-  if (!reglages.date) ouvrirReglages();
 
   /* ---------- Hors ligne ---------- */
   if ("serviceWorker" in navigator && location.protocol !== "file:") {

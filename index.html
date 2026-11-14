@@ -78,22 +78,27 @@
   <dialog id="dialogue">
     <form method="dialog" id="formulaire">
       <h2>Réglages ✿</h2>
-      <fieldset class="voyageuses">
-        <legend>Les voyageuses (facultatif)</legend>
-        <div class="deux-champs">
-          <input type="text" id="prenom1" maxlength="30" autocomplete="off" placeholder="Prénom" aria-label="Prénom de la première voyageuse">
-          <span aria-hidden="true">&amp;</span>
-          <input type="text" id="prenom2" maxlength="30" autocomplete="off" placeholder="Prénom" aria-label="Prénom de la deuxième voyageuse">
+      <fieldset class="mode">
+        <legend>Je compte les jours jusqu'au…</legend>
+        <label><input type="radio" name="mode" value="depart"><span>🧳 Départ</span></label>
+        <label><input type="radio" name="mode" value="retour"><span>🏠 Retour</span></label>
+      </fieldset>
+      <p class="aide">Départ pour qui part, Retour pour les parents.</p>
+      <fieldset class="vol">
+        <legend>Départ (décollage)</legend>
+        <div class="date-heure">
+          <input type="date" id="champ-date" required aria-label="Date du départ">
+          <input type="time" id="champ-heure" aria-label="Heure du décollage">
         </div>
       </fieldset>
-      <label>Date du départ
-        <input type="date" id="champ-date" required>
-      </label>
-      <label class="case"><input type="checkbox" id="provisoire"> Date encore provisoire</label>
-      <label>Heure du vol, heure de Paris (facultatif)
-        <input type="time" id="champ-heure">
-      </label>
-      <p class="aide">Sans heure, l'appli compte les jours. Avec une heure, elle affiche aussi les heures, minutes et secondes.</p>
+      <fieldset class="vol">
+        <legend>Retour (atterrissage)</legend>
+        <div class="date-heure">
+          <input type="date" id="champ-retour" required aria-label="Date du retour">
+          <input type="time" id="champ-heure-retour" aria-label="Heure d'arrivée">
+        </div>
+      </fieldset>
+      <p class="aide">Heures de Paris. Tout est déjà rempli : à changer seulement si un vol est décalé.</p>
       <fieldset class="themes">
         <legend>Thème</legend>
         <label><input type="radio" name="theme" value="kawaii"><span class="apercu apercu-kawaii"></span>Kawaii pastel</label>
